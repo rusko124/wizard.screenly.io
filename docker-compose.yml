@@ -1,0 +1,24 @@
+version: '3'
+services:
+  jekyll:
+    build: .
+    command: jekyll build --watch --config _config.yml
+    image: wizard-screenly:latest
+    volumes:
+      - .:/usr/src/app:delegated
+      - cache:/usr/src/app/.jekyll-cache/
+      - site:/usr/src/app/_site/
+    environment:
+      - JEKYLL_ENV=development
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - site:/usr/share/nginx/html:ro
+    ports:
+      - 3002:80
+    depends_on:
+      - jekyll
+
+volumes:
+  site:
+  cache:
